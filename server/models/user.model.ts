@@ -14,7 +14,7 @@ export interface IUser extends Document {
     public_id: string;
     url: string;
   };
-  role: String;
+  role: string;
   isVerified: boolean;
   courses: Array<{ courseId: string }>;
   comparePassword: (passwords: string) => Promise<boolean>;
