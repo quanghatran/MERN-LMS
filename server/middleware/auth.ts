@@ -10,7 +10,9 @@ export const isAuthenticated = CatchAsyncError(
     const access_token = req.cookies.access_token;
 
     if (!access_token) {
-      return next(new ErrorHandler("Pease login to access this resource", 400));
+      return next(
+        new ErrorHandler("Please login to access this resource", 400)
+      );
     }
 
     const decoded = jwt.verify(
