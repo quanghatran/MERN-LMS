@@ -54,10 +54,6 @@ interface IUpdatePassword {
   newPassword: string;
 }
 
-interface IUpdateAvatar {
-  avatar: string;
-}
-
 export const registrationUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -113,7 +109,7 @@ export const createActivationToken = (user: any): IActivationToken => {
     },
     process.env.ACTIVATION_SECRET as Secret,
     {
-      expiresIn: "5m",
+      expiresIn: "50m",
     }
   );
 
@@ -228,7 +224,7 @@ export const updateAccessToken = CatchAsyncError(
       const accessToken = jwt.sign(
         { id: user._id },
         process.env.ACCESS_TOKEN as string,
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRE }
+        { expiresIn: "50m" }
       );
       const refreshToken = jwt.sign(
         { id: user._id },
@@ -369,10 +365,11 @@ export const updateAvatar = CatchAsyncError(
 
       if (avatar && user) {
         // if we already have avatar:
-        if (user?.avatar.public_id) {
+        if (user?.avatar?.public_id) {
           // first delete the old image
           await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
 
+          // then add the new image to the avatars folder
           const myCloud = await cloudinary.v2.uploader.upload(avatar, {
             folder: "avatars",
             width: 150,
@@ -396,7 +393,7 @@ export const updateAvatar = CatchAsyncError(
       }
 
       await user?.save();
-      await redis.set(req.user?._id, JSON.stringify(user));
+      await redis.set(userId, JSON.stringify(user));
 
       res.status(200).json({
         success: true,
