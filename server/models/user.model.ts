@@ -1,7 +1,7 @@
 require("dotenv").config();
-import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
 const emailRegexPattern: RegExp =
   /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -95,6 +95,6 @@ userSchema.methods.comparePassword = async function (
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-const userModel: Model<IUser> = mongoose.model("User", userSchema);
+const UserModel: Model<IUser> = mongoose.model("User", userSchema);
 
-export default userModel;
+export default UserModel;
