@@ -1,11 +1,16 @@
 require("dotenv").config();
+import cloudinary from "cloudinary";
 import ejs from "ejs";
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import path from "path";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
 import UserModel, { IUser } from "../models/user.model";
-import { getAllUsersService, getUserById } from "../services/user.service";
+import {
+  getAllUsersService,
+  getUserById,
+  updateUserRoleService,
+} from "../services/user.service";
 import ErrorHandler from "../utils/ErrorHandler";
 import {
   accessTokenOptions,
@@ -14,7 +19,6 @@ import {
 } from "../utils/jwt";
 import { redis } from "../utils/redis";
 import sendMail from "../utils/sendMail";
-import cloudinary from "cloudinary";
 
 interface IRegistrationBody {
   name: string;
@@ -412,6 +416,18 @@ export const getAllUsersByAdmin = CatchAsyncError(
       getAllUsersService(res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);
+
+// update user role --only for admin
+export const updateUserRole = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id, role } = req.body;
+      updateUserRoleService(res, id, role);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
     }
   }
 );
