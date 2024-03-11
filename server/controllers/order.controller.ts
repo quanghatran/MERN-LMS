@@ -7,7 +7,7 @@ import CourseModel from "../models/course.model";
 import NotificationModel from "../models/notification.model";
 import { IOrder } from "../models/order.model";
 import UserModel from "../models/user.model";
-import { newOrder } from "../services/order.service";
+import { getAllOrdersService, newOrder } from "../services/order.service";
 import ErrorHandler from "../utils/ErrorHandler";
 import sendMail from "../utils/sendMail";
 
@@ -86,6 +86,17 @@ export const createOrder = CatchAsyncError(
       await course.save();
 
       newOrder(data, res, next);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);
+
+// get all orders -- only for admin role
+export const getAllOrdersByAdmin = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllOrdersService(res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }

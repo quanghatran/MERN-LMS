@@ -7,11 +7,10 @@ import path from "path";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
 import CourseModel from "../models/course.model";
 import NotificationModel from "../models/notification.model";
-import { createCourse } from "../services/course.service";
+import { createCourse, getAllCoursesService } from "../services/course.service";
 import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
 import sendMail from "../utils/sendMail";
-import cron from "node-cron";
 
 interface IAddQuestionData {
   question: string;
@@ -419,14 +418,13 @@ export const addReplyToReview = CatchAsyncError(
   }
 );
 
-//  delete notification -- only for admin role
-cron.schedule("0 0 0 * * *", async () => {
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-
-  await NotificationModel.deleteMany({
-    status: "read",
-    createdAt: { $lt: thirtyDaysAgo },
-  });
-
-  console.log("Delete read notifications");
-});
+// get all courses -- only for admin role
+export const getAllCoursesByAdmin = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllCoursesService(res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);

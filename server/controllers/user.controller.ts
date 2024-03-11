@@ -5,7 +5,7 @@ import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import path from "path";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
 import UserModel, { IUser } from "../models/user.model";
-import { getUserById } from "../services/user.service";
+import { getAllUsersService, getUserById } from "../services/user.service";
 import ErrorHandler from "../utils/ErrorHandler";
 import {
   accessTokenOptions,
@@ -401,6 +401,17 @@ export const updateAvatar = CatchAsyncError(
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// get all users -- only for admin role
+export const getAllUsersByAdmin = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllUsersService(res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
     }
   }
 );
