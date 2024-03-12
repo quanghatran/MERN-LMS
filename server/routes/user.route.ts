@@ -46,4 +46,5 @@ userRouter.delete(
   authorizeRoles("admin"),
   deleteUser
 );
+
 export default userRouter;

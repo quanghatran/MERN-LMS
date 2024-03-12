@@ -52,4 +52,5 @@ courseRouter.delete(
   authorizeRoles("admin"),
   deleteCourse
 );
+
 export default courseRouter;

@@ -15,4 +15,5 @@ orderRouter.get(
   authorizeRoles("admin"),
   getAllOrdersByAdmin
 );
+
 export default orderRouter;
