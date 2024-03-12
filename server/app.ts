@@ -6,6 +6,7 @@ import { ErrorMiddleware } from "./middleware/error";
 import {
   analyticsRouter,
   courseRouter,
+  layoutRouter,
   notificationRouter,
   orderRouter,
   userRouter,
@@ -32,7 +33,8 @@ app.use(
   courseRouter,
   orderRouter,
   notificationRouter,
-  analyticsRouter
+  analyticsRouter,
+  layoutRouter
 );
 
 // testing api
